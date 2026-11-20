@@ -1,0 +1,29 @@
+:root { color-scheme: light dark; --bg:#fff; --fg:#0b1b3a; --mut:#475569; --line:#cbd5e1; --card:#f1f5f9; --brand:#0e7c7b; --red:#c2331a; --amber:#7a4e00; --ok:#0b7a55; }
+@media (prefers-color-scheme: dark) { :root { --bg:#0a1220; --fg:#e8eef8; --mut:#a9b8d0; --line:#2b3a58; --card:#111c30; --brand:#2dd4bf; --red:#ff9d88; --amber:#fcd34d; --ok:#4ade9d; } }
+* { box-sizing: border-box; }
+body { width: 380px; margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.45 system-ui, sans-serif; }
+header { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+header h1 { font-size: 16px; margin: 0; flex: 1; }
+.logo { width: 20px; height: 20px; border-radius: 6px; background: var(--brand); }
+main { padding: 12px 14px 16px; }
+label { display: block; margin: 10px 0 4px; font-weight: 600; font-size: 12px; }
+input, textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); font: inherit; }
+input:focus-visible, textarea:focus-visible, button:focus-visible { outline: 3px solid var(--brand); outline-offset: 1px; }
+button { font: inherit; font-weight: 600; border-radius: 8px; padding: 8px 12px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); cursor: pointer; }
+button.primary { background: #0b1b3a; border-color: #0b1b3a; color: #fff; }
+button.ghost { background: var(--card); }
+button.link { border: 0; background: none; color: var(--brand); padding: 4px; }
+button:disabled { opacity: .6; cursor: default; }
+#setup button.primary { width: 100%; margin-top: 12px; }
+.row { display: flex; gap: 8px; margin-top: 10px; } .row .primary { flex: 1; }
+.muted { color: var(--mut); } .small { font-size: 12px; } .error { color: var(--red); font-weight: 600; margin: 10px 0 0; }
+.summary { display: flex; gap: 8px; margin: 12px 0 8px; } .summary div { flex: 1; background: var(--card); border-radius: 10px; padding: 8px; text-align: center; }
+.summary b { display: block; font-size: 20px; }
+.finding { border: 1px solid var(--line); border-left-width: 4px; border-radius: 8px; padding: 8px 10px; margin: 8px 0; background: var(--card); }
+.finding.high { border-left-color: var(--red); } .finding.medium { border-left-color: var(--amber); } .finding.low { border-left-color: var(--mut); }
+.finding h3 { margin: 0 0 2px; font-size: 13px; } .finding p { margin: 2px 0; font-size: 12.5px; }
+.tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 999px; border: 1px solid var(--line); margin-right: 4px; }
+.fix { margin-top: 6px; padding: 6px 8px; border-radius: 6px; background: var(--bg); border: 1px dashed var(--ok); font-size: 12.5px; }
+.fix button { margin-top: 4px; padding: 3px 8px; font-size: 12px; }
+.clean { color: var(--ok); font-weight: 700; }
+a { color: var(--brand); font-weight: 600; }

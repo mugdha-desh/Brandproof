@@ -1,0 +1,25 @@
+# Example only (rename to brandproof-gate.yml to use it). Blocks a merge when copy files fail the BrandProof gate.
+name: brandproof-gate
+on:
+  pull_request:
+    paths: ["content/**"]
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install httpx
+      - name: Check every changed content file
+        env:
+          BRANDPROOF_URL: ${{ secrets.BRANDPROOF_URL }}
+          BRANDPROOF_TOKEN: ${{ secrets.BRANDPROOF_TOKEN }}
+        run: |
+          set -e
+          for f in $(git diff --name-only origin/${{ github.base_ref }}... -- content/); do
+            python backend/cli.py check "$f" --intent "Content change in pull request" --fail-on high --out "proof-$(basename "$f").json"
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: proof-packs, path: "proof-*.json" }

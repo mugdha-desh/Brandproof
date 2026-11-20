@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BrandProof</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header><span class="logo" aria-hidden="true"></span><h1>BrandProof</h1><button id="signout" class="link" hidden>Sign out</button></header>
+
+  <main>
+    <section id="setup" hidden aria-label="Connect">
+      <p class="muted">Connect to your organisation's BrandProof server.</p>
+      <label for="server">Server address</label>
+      <input id="server" type="url" placeholder="https://brandproof.example.com" autocomplete="url">
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="username">
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password">
+      <button id="login" class="primary">Sign in</button>
+      <p class="muted small">Your sign-in token stays in this browser session only and is cleared when the browser closes.</p>
+    </section>
+
+    <section id="check" hidden aria-label="Check text">
+      <label for="intent">What is this text for? (one line)</label>
+      <input id="intent" type="text" maxlength="200" placeholder="Announce our new savings account">
+      <label for="text">Text to check</label>
+      <textarea id="text" rows="6" placeholder="Select text on the page and open this popup, or paste it here."></textarea>
+      <div class="row"><button id="useSel" class="ghost">Use selected text</button><button id="run" class="primary">Check</button></div>
+      <p id="who" class="muted small"></p>
+    </section>
+
+    <section id="result" hidden aria-live="polite" aria-label="Result"></section>
+    <p id="msg" role="alert" class="error" hidden></p>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>

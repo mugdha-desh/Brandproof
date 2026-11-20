@@ -1,0 +1,13 @@
+FROM python:3.12-slim
+WORKDIR /app
+ENV PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
+# Local OCR (reads text inside images without sending anything out) and a font with Cyrillic for the Trust Layer test suite
+RUN apt-get update && apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-hin fonts-dejavu-core \
+    && rm -rf /var/lib/apt/lists/*
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY app ./app
+COPY eval ./eval
+RUN mkdir -p /app/data
+EXPOSE 8000
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
