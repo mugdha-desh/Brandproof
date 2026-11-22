@@ -175,3 +175,13 @@ def test_storage_rejects_path_traversal_and_absolute_paths(env):
         with pytest.raises(ValueError, match="Invalid storage path"):
             storage.save(path, b"not written")
 
+def test_production_refuses_the_public_demo_password(monkeypatch):
+    monkeypatch.setenv("BP_ENV", "production")
+    monkeypatch.setenv("BP_SECRET", "s" * 48)
+    monkeypatch.setenv("BP_SEED", "1")
+    monkeypatch.setenv("BP_DEMO_PASSWORD", "demo1234")
+    with pytest.raises(RuntimeError, match="BP_DEMO_PASSWORD"):
+        limits.check_secrets()
+    monkeypatch.setenv("BP_DEMO_PASSWORD", "a-unique-deployment-password")
+    assert limits.check_secrets() == []
+
