@@ -2,7 +2,7 @@
 
 Generated from the repository as submitted. Re-run every command below; do not trust this file over a fresh run.
 
-## Last recorded baseline: 208 passed\n\nThis is the recorded result from the submitted baseline, not a fresh run of the `submission-hardening` branch. That branch adds three regression tests (bounded upload reader, storage path traversal, malformed JWT subject); run the full suite and update this report before submission.
+## Last recorded baseline: 208 passed\n\nThis is the recorded result from the submitted baseline, not a fresh run of the `submission-hardening` branch. That branch adds four regression tests (bounded upload reader, storage path traversal, malformed JWT subject, production demo-password enforcement); run the full suite and update this report before submission.
 
 `cd backend && python -m pytest -q` (about 30 seconds)
 
