@@ -52,6 +52,22 @@ def sniff(data: bytes) -> str | None:
     return None
 
 
+async def read_upload(upload, max_bytes: int | None = None) -> bytes:
+    """Read an UploadFile in bounded chunks; reject oversized bodies before buffering them fully."""
+    limit = max_upload_bytes() if max_bytes is None else max_bytes
+    chunks = []
+    total = 0
+    while True:
+        chunk = await upload.read(min(64 * 1024, limit - total + 1))
+        if not chunk:
+            break
+        total += len(chunk)
+        if total > limit:
+            raise HTTPException(413, f"File is larger than {limit // (1024 * 1024)} MB")
+        chunks.append(chunk)
+    return b"".join(chunks)
+
+
 def check_upload(data: bytes | None, filename: str, kind: str) -> None:
     """Raise 413/415 for files we will not process. `kind` is the kind the service derived from name and type."""
     if not data:
