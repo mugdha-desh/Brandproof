@@ -106,7 +106,7 @@ def rule_decision(pk: int, b: RuleDecision, user: User = Depends(require("owner"
 @router.post("/guidelines/import")
 async def import_guidelines(text: str = Form(""), file: UploadFile | None = File(None),
                             user: User = Depends(require("owner")), db: Session = Depends(get_db)):
-    data = await file.read() if file is not None and file.filename else None
+    data = await limits.read_upload(file, 5 * 1024 * 1024) if file is not None and file.filename else None
     limits.check_guideline_file(data)
     limits.check_text(text)
     fname = file.filename if file is not None else ""
@@ -252,7 +252,7 @@ def add_item(b: ItemBody, user: User = Depends(require("owner")), db: Session = 
 @router.post("/library/logo")
 async def add_logo(name: str = Form(...), file: UploadFile = File(...), user: User = Depends(require("owner")),
                    db: Session = Depends(get_db)):
-    data = await file.read()
+    data = await limits.read_upload(file, 2 * 1024 * 1024)
     limits.check_logo(data)
     path = storage.save(f"library/{name.strip().replace(' ', '_')}-{file.filename}", data, db)
     i = LibraryItem(kind="logo", name=name.strip(), value={"mime": file.content_type}, file_path=path)
