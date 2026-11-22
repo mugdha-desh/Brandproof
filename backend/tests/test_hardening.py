@@ -168,3 +168,10 @@ def test_upload_reader_stops_at_limit_without_reading_unbounded_data():
     assert exc.value.status_code == 413
     assert sum(stream.requested) <= 33
 
+def test_storage_rejects_path_traversal_and_absolute_paths(env):
+    from app import storage
+
+    for path in ("../outside.txt", "nested/../../outside.txt", r"..\\outside.txt", "/tmp/outside.txt"):
+        with pytest.raises(ValueError, match="Invalid storage path"):
+            storage.save(path, b"not written")
+
