@@ -147,3 +147,24 @@ def test_outside_production_a_weak_secret_only_warns(monkeypatch, caplog):
     with caplog.at_level("WARNING", logger="brandproof.security"):
         problems = limits.check_secrets()
     assert problems and "security:" in caplog.text
+
+def test_upload_reader_stops_at_limit_without_reading_unbounded_data():
+    import asyncio
+    from fastapi import HTTPException
+
+    class Stream:
+        def __init__(self):
+            self.data = b"x" * 100
+            self.requested = []
+
+        async def read(self, size):
+            self.requested.append(size)
+            chunk, self.data = self.data[:size], self.data[size:]
+            return chunk
+
+    stream = Stream()
+    with pytest.raises(HTTPException) as exc:
+        asyncio.run(limits.read_upload(stream, 32))
+    assert exc.value.status_code == 413
+    assert sum(stream.requested) <= 33
+
