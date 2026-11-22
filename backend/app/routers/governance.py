@@ -1,4 +1,5 @@
 import datetime as dt
+import re
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel
@@ -254,8 +255,11 @@ async def add_logo(name: str = Form(...), file: UploadFile = File(...), user: Us
                    db: Session = Depends(get_db)):
     data = await limits.read_upload(file, 2 * 1024 * 1024)
     limits.check_logo(data)
-    path = storage.save(f"library/{name.strip().replace(' ', '_')}-{file.filename}", data, db)
-    i = LibraryItem(kind="logo", name=name.strip(), value={"mime": file.content_type}, file_path=path)
+    safe_name = re.sub(r"[^A-Za-z0-9._-]+", "_", name.strip())[:80].strip("._") or "logo"
+    raw_filename = (file.filename or "logo").replace("\\\\", "/").rsplit("/", 1)[-1]
+    safe_filename = re.sub(r"[^A-Za-z0-9._-]+", "_", raw_filename)[:120].strip("._") or "logo.png"
+    path = storage.save(f"library/{safe_name}-{safe_filename}", data, db)
+    i = LibraryItem(kind="logo", name=name.strip()[:200], value={"mime": file.content_type}, file_path=path)
     db.add(i)
     audit.log(db, user.email, "library.add", "library", "logo", {"name": name})
     db.commit()
