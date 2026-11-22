@@ -26,6 +26,8 @@ services:
         value: production      # the API refuses to start with a weak BP_SECRET
       - key: BP_SEED
         value: "1"
+      - key: BP_DEMO_PASSWORD
+        sync: false            # set a strong unique password; production refuses the public default
       - key: BP_PUBLIC_URL
         value: https://brandproof-web.onrender.com   # used for the verify link printed on Proof Pack PDFs
       - key: BP_CORS_ORIGINS

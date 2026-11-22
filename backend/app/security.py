@@ -36,9 +36,12 @@ def current_user(authorization: str = Header(default=""), db: Session = Depends(
         raise HTTPException(401, "Missing token")
     try:
         data = jwt.decode(authorization[7:], config.secret(), algorithms=["HS256"])
-    except jwt.PyJWTError:
+        user_id = int(data.get("sub", ""))
+        if user_id <= 0:
+            raise ValueError("Invalid subject")
+    except (jwt.PyJWTError, ValueError, TypeError, AttributeError):
         raise HTTPException(401, "Invalid or expired token")
-    user = db.get(User, int(data["sub"]))
+    user = db.get(User, user_id)
     if not user:
         raise HTTPException(401, "Unknown user")
     return user

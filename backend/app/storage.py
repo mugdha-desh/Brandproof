@@ -4,8 +4,23 @@ import os
 from . import config
 
 
+def _safe_rel(rel: str) -> str:
+    """Reject absolute paths and traversal before using a storage key on disk or in the DB."""
+    if not isinstance(rel, str) or not rel or "\x00" in rel or rel.startswith(("/", "\\")):
+        raise ValueError("Invalid storage path")
+    normalized = os.path.normpath(rel.replace("\\", os.sep))
+    if normalized in ("", ".", "..") or normalized.startswith(".." + os.sep):
+        raise ValueError("Invalid storage path")
+    if any(part == ".." for part in normalized.split(os.sep)):
+        raise ValueError("Invalid storage path")
+    root = os.path.abspath(config.storage_dir())
+    target = os.path.abspath(os.path.join(root, normalized))
+    if os.path.commonpath((root, target)) != root:
+        raise ValueError("Invalid storage path")
+    return normalized
+
 def _abs(rel: str) -> str:
-    return os.path.join(config.storage_dir(), rel)
+    return os.path.join(config.storage_dir(), _safe_rel(rel))
 
 
 def _use_db() -> bool:
@@ -19,6 +34,7 @@ def _scope(sess):
 
 
 def save(rel: str, data: bytes, sess=None) -> str:
+    rel = _safe_rel(rel)
     if _use_db():
         from . import db
         s, own = _scope(sess)
@@ -40,6 +56,7 @@ def save(rel: str, data: bytes, sess=None) -> str:
 
 
 def read(rel: str, sess=None) -> bytes:
+    rel = _safe_rel(rel)
     if _use_db():
         from . import db
         s, own = _scope(sess)
@@ -55,6 +72,7 @@ def read(rel: str, sess=None) -> bytes:
 
 
 def delete(rel: str, sess=None) -> None:
+    rel = _safe_rel(rel)
     if _use_db():
         from . import db
         s, own = _scope(sess)

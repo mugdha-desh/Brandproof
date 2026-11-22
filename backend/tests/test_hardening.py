@@ -147,3 +147,41 @@ def test_outside_production_a_weak_secret_only_warns(monkeypatch, caplog):
     with caplog.at_level("WARNING", logger="brandproof.security"):
         problems = limits.check_secrets()
     assert problems and "security:" in caplog.text
+
+def test_upload_reader_stops_at_limit_without_reading_unbounded_data():
+    import asyncio
+    from fastapi import HTTPException
+
+    class Stream:
+        def __init__(self):
+            self.data = b"x" * 100
+            self.requested = []
+
+        async def read(self, size):
+            self.requested.append(size)
+            chunk, self.data = self.data[:size], self.data[size:]
+            return chunk
+
+    stream = Stream()
+    with pytest.raises(HTTPException) as exc:
+        asyncio.run(limits.read_upload(stream, 32))
+    assert exc.value.status_code == 413
+    assert sum(stream.requested) <= 33
+
+def test_storage_rejects_path_traversal_and_absolute_paths(env):
+    from app import storage
+
+    for path in ("../outside.txt", "nested/../../outside.txt", r"..\\outside.txt", "/tmp/outside.txt"):
+        with pytest.raises(ValueError, match="Invalid storage path"):
+            storage.save(path, b"not written")
+
+def test_production_refuses_the_public_demo_password(monkeypatch):
+    monkeypatch.setenv("BP_ENV", "production")
+    monkeypatch.setenv("BP_SECRET", "s" * 48)
+    monkeypatch.setenv("BP_SEED", "1")
+    monkeypatch.setenv("BP_DEMO_PASSWORD", "demo1234")
+    with pytest.raises(RuntimeError, match="BP_DEMO_PASSWORD"):
+        limits.check_secrets()
+    monkeypatch.setenv("BP_DEMO_PASSWORD", "a-unique-deployment-password")
+    assert limits.check_secrets() == []
+

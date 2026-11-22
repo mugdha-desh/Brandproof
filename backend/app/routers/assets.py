@@ -42,7 +42,7 @@ async def create_asset(title: str = Form(...), intent: str = Form(...), channel:
                        db: Session = Depends(get_db)):
     if user.role == "owner":
         raise HTTPException(403, "Guideline owners manage rules; they do not submit content")
-    data = await file.read() if file is not None and file.filename else None
+    data = await limits.read_upload(file) if file is not None and file.filename else None
     a = service.create_asset(db, user, title, intent, channel, ai_generated, alt_text, text=text or None, data=data,
                              mime=(file.content_type if file is not None and file.filename else "text/plain"),
                              filename=(file.filename if file is not None else ""))
@@ -79,7 +79,7 @@ async def new_version(asset_id: int, text: str = Form(""), note: str = Form(""),
     a = service.get_asset(db, user, asset_id)
     if a.status == "Approved":
         pass  # a new version reopens an approved asset
-    data = await file.read() if file is not None and file.filename else None
+    data = await limits.read_upload(file) if file is not None and file.filename else None
     service.add_version(db, user, a, text=text or None, data=data,
                         mime=(file.content_type if file is not None and file.filename else "text/plain"),
                         filename=(file.filename if file is not None else ""), note=note)

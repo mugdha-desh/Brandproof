@@ -139,3 +139,17 @@ def test_owner_role_cannot_submit_content(client):
 
 def test_demo_users_listing_is_off_when_seeding_is_off(client):
     assert client.get("/api/demo-users").json() == []  # tests run with BP_SEED=0, like production
+
+def test_malformed_signed_token_subject_returns_401_not_500(client, monkeypatch):
+    import datetime as dt
+    import jwt
+    from app import config
+
+    token = jwt.encode(
+        {"sub": "not-a-user-id", "exp": dt.datetime.now(dt.timezone.utc) + dt.timedelta(minutes=5)},
+        config.secret(),
+        algorithm="HS256",
+    )
+    response = client.get("/api/me", headers={"Authorization": "Bearer " + token})
+    assert response.status_code == 401
+

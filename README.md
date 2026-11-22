@@ -40,7 +40,7 @@ cd frontend && npm ci
 BACKEND_URL=http://localhost:8000 npm run dev      # http://localhost:3000
 ```
 
-### Demo accounts (password `demo1234`, change with `BP_DEMO_PASSWORD`)
+### Demo accounts (local default password `demo1234`, change with `BP_DEMO_PASSWORD`)
 
 | Email | Role |
 |---|---|
@@ -51,7 +51,7 @@ BACKEND_URL=http://localhost:8000 npm run dev      # http://localhost:3000
 | reviewer@finora.example | Authorised reviewer (legal) |
 | owner@finora.example | Guideline owner |
 
-The login page has one-click buttons for them. **Demo passwords and the demo-user list exist only while `BP_SEED=1`.** For anything real set `BP_SEED=0` and a strong `BP_SECRET`.
+The login page can prefill each demo email; enter the configured demo password to sign in. **Demo users exist only while `BP_SEED=1`.** For a public production demo, set a unique `BP_DEMO_PASSWORD` and a strong `BP_SECRET`; for a non-demo deployment set `BP_SEED=0` and provision accounts securely.
 
 ---
 
@@ -75,7 +75,7 @@ With the app running (demo data on), in a new terminal:
 python scripts/smoke_test.py          # needs: pip install httpx   -> expect: ALL CHECKS PASSED (42/42)
 ```
 
-Plus the unit tests: `cd backend && python -m pytest -q` -> `208 passed`.
+Plus the unit tests: `cd backend && python -m pytest -q` (the command prints the current pass count).
 
 ## AI is optional
 
@@ -100,13 +100,13 @@ Plus the unit tests: `cd backend && python -m pytest -q` -> `208 passed`.
 Light and dark themes (toggle in the menu and on the sign-in page; follows the system setting on first visit), a Help and FAQ page, loading skeletons and role-based quick-start steps. Motion is switched off for people who ask their system for reduced motion.
 
 ## Security and limits
-Upload size and type limits, content sniffing, rate limits and secret checks are listed, with their limits, in `docs/SECURITY.md`. For a real deployment set `BP_ENV=production` and a `BP_SECRET` of 32+ characters.
+Upload size and type limits, content sniffing, rate limits and secret checks are listed, with their limits, in `docs/SECURITY.md`. For production set `BP_ENV=production`, a `BP_SECRET` of 32+ characters, and (if `BP_SEED=1`) a unique `BP_DEMO_PASSWORD` other than `demo1234`.
 
 ## Tests and evaluation
 
 ```bash
 cd backend
-python -m pytest -q            # 208 tests
+python -m pytest -q            # run the current suite
 python -m eval.run_eval        # 52-item seeded set + 16-item held-out probe -> docs/EVAL_REPORT.md
 cd ../frontend && npx tsc --noEmit && npm run build
 ```
@@ -125,7 +125,7 @@ cd ../frontend && npx tsc --noEmit && npm run build
 backend/app/engine/   trust.py (Trust Layer) | rules.py | claims.py | judgment.py | review.py (pipeline, fixes, verifier) | redteam.py | importer.py
 backend/app/llm/      adapter.py (Anthropic / Gemini, redaction, call log, validation)
 backend/app/          service.py (workflow, risk routing, Proof Pack, insights) | audit.py (hash chain) | seed.py (Finora brand pack)
-backend/tests/        208 tests | backend/eval/ seeded set + harness
+backend/tests/        automated regression suite | backend/eval/ seeded set + harness
 frontend/app/         dashboard, help (FAQ and guide), new, assets/[id] (+ proof), governance, rulebook, trust, evaluation, stale, verify/[code], disclosure, audit
 docs/                 FINAL_REPORT, SCOPE_LOCK, ARCHITECTURE, LIMITATIONS_AND_ROADMAP, DEMO_SCRIPT, PRE_SUBMISSION_CHECKLIST, AI_DISCLOSURE, SECURITY, CLI, CONTRIBUTIONS, USER_TESTING, TEST_REPORT, EVAL_REPORT, ROUND3_PROGRESS
 ```

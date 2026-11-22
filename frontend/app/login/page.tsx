@@ -50,10 +50,10 @@ export default function Login() {
         <ThemeToggle className="absolute right-5 top-5" />
         <div className="w-full max-w-md">
           <h2 className="text-3xl font-extrabold">Welcome back</h2>
-          <p className="mt-1 text-sm text-slate-600">Pick a demo account to explore, or use your own email.</p>
+          <p className="mt-1 text-sm text-slate-600">Choose a demo account to fill the email, then enter the configured demo password.</p>
           <ul className="stagger mt-5 grid gap-2" aria-label="Demo accounts">
             {demo.map((u) => (
-              <li key={u.id}><button className="group flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-surface p-3 text-left transition hover:-translate-y-px hover:border-brand hover:shadow-soft" onClick={() => submit(undefined, u.email, process.env.NEXT_PUBLIC_DEMO_PASSWORD || "demo1234")}>
+              <li key={u.id}><button className="group flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-surface p-3 text-left transition hover:-translate-y-px hover:border-brand hover:shadow-soft" onClick={() => { setEmail(u.email); setPassword(""); }}>
                 <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brandbg text-sm font-bold text-brand">{String(u.name)[0]}</span>
                 <span className="flex-1"><span className="block text-sm font-semibold">{u.name}</span><span className="block text-xs text-slate-600">{ROLE_LABEL[u.role]}: {ROLE_HINT[u.role] || ""}</span></span>
                 <span className="text-sm font-semibold text-brand opacity-0 transition group-hover:opacity-100 group-focus-visible:opacity-100">Enter</span>
