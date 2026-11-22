@@ -51,7 +51,7 @@ BACKEND_URL=http://localhost:8000 npm run dev      # http://localhost:3000
 | reviewer@finora.example | Authorised reviewer (legal) |
 | owner@finora.example | Guideline owner |
 
-The login page has one-click buttons for them. **Demo passwords and the demo-user list exist only while `BP_SEED=1`.** For anything real set `BP_SEED=0` and a strong `BP_SECRET`.
+The login page can prefill each demo email; enter the configured demo password to sign in. **Demo users exist only while `BP_SEED=1`.** For a public production demo, set a unique `BP_DEMO_PASSWORD` and a strong `BP_SECRET`; for a non-demo deployment set `BP_SEED=0` and provision accounts securely.
 
 ---
 
@@ -100,7 +100,7 @@ Plus the unit tests: `cd backend && python -m pytest -q` (the command prints the
 Light and dark themes (toggle in the menu and on the sign-in page; follows the system setting on first visit), a Help and FAQ page, loading skeletons and role-based quick-start steps. Motion is switched off for people who ask their system for reduced motion.
 
 ## Security and limits
-Upload size and type limits, content sniffing, rate limits and secret checks are listed, with their limits, in `docs/SECURITY.md`. For a real deployment set `BP_ENV=production` and a `BP_SECRET` of 32+ characters.
+Upload size and type limits, content sniffing, rate limits and secret checks are listed, with their limits, in `docs/SECURITY.md`. For production set `BP_ENV=production`, a `BP_SECRET` of 32+ characters, and (if `BP_SEED=1`) a unique `BP_DEMO_PASSWORD` other than `demo1234`.
 
 ## Tests and evaluation
 
