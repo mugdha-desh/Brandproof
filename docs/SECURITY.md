@@ -11,7 +11,7 @@ What is enforced in code (each row has a test in `backend/tests/test_hardening.p
 | Login brute force | 8 failed logins per IP and email in 5 minutes, then 429 even with the right password. Only failures count. Unknown email and wrong password give the same answer and the same work, so response time does not reveal which emails exist. | `BP_RATE_LOGIN_FAILS` |
 | Upload flooding | 30 uploads per IP per minute (429 with `Retry-After`). | `BP_RATE_UPLOAD` |
 | Public verify page | 60 checks per IP per minute. | `BP_RATE_VERIFY` |
-| Secrets | With `BP_ENV=production` the API will not start if `BP_SECRET` is the default or under 32 characters. Elsewhere it logs a warning. Demo accounts with the default password also log a warning. | `BP_ENV`, `BP_SECRET` |
+| Secrets | With `BP_ENV=production` the API refuses a default/short `BP_SECRET`, and also refuses seeded demo accounts using the public `demo1234` password. | `BP_ENV`, `BP_SECRET`, `BP_SEED`, `BP_DEMO_PASSWORD` |
 | Headers | `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`, a locked-down API Content-Security-Policy, and `Cache-Control: no-store` on every API response. | fixed |
 | Storage paths | Storage keys reject absolute paths and `..` traversal on both disk and database-backed storage; uploaded logo names are reduced to safe filename characters. | fixed |\n| Token parsing | Malformed signed JWT subjects are rejected with 401 rather than causing an unhandled server error. | fixed |\n| Untrusted files | Uploaded files are parsed, never executed. Hidden text and instructions aimed at the AI reviewer are handled by the Trust Layer. | see Trust Layer |
 
