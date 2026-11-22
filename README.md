@@ -75,7 +75,7 @@ With the app running (demo data on), in a new terminal:
 python scripts/smoke_test.py          # needs: pip install httpx   -> expect: ALL CHECKS PASSED (42/42)
 ```
 
-Plus the unit tests: `cd backend && python -m pytest -q` -> `208 passed`.
+Plus the unit tests: `cd backend && python -m pytest -q` (the command prints the current pass count).
 
 ## AI is optional
 
@@ -106,7 +106,7 @@ Upload size and type limits, content sniffing, rate limits and secret checks are
 
 ```bash
 cd backend
-python -m pytest -q            # 208 tests
+python -m pytest -q            # run the current suite
 python -m eval.run_eval        # 52-item seeded set + 16-item held-out probe -> docs/EVAL_REPORT.md
 cd ../frontend && npx tsc --noEmit && npm run build
 ```
@@ -125,7 +125,7 @@ cd ../frontend && npx tsc --noEmit && npm run build
 backend/app/engine/   trust.py (Trust Layer) | rules.py | claims.py | judgment.py | review.py (pipeline, fixes, verifier) | redteam.py | importer.py
 backend/app/llm/      adapter.py (Anthropic / Gemini, redaction, call log, validation)
 backend/app/          service.py (workflow, risk routing, Proof Pack, insights) | audit.py (hash chain) | seed.py (Finora brand pack)
-backend/tests/        208 tests | backend/eval/ seeded set + harness
+backend/tests/        automated regression suite | backend/eval/ seeded set + harness
 frontend/app/         dashboard, help (FAQ and guide), new, assets/[id] (+ proof), governance, rulebook, trust, evaluation, stale, verify/[code], disclosure, audit
 docs/                 FINAL_REPORT, SCOPE_LOCK, ARCHITECTURE, LIMITATIONS_AND_ROADMAP, DEMO_SCRIPT, PRE_SUBMISSION_CHECKLIST, AI_DISCLOSURE, SECURITY, CLI, CONTRIBUTIONS, USER_TESTING, TEST_REPORT, EVAL_REPORT, ROUND3_PROGRESS
 ```
