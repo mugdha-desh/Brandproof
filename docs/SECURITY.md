@@ -22,4 +22,4 @@ What is enforced in code (each row has a test in `backend/tests/test_hardening.p
 - **PDF and image parsers are third-party libraries (PyMuPDF, Pillow, Tesseract).** We cap sizes and check types, but a parser vulnerability would still be a risk; keep them updated and run the API as a non-root container user.
 - **No malware scan.** Files are not run through an antivirus engine.
 - **No penetration test has been done.** These controls were tested by our own tests only.
-\n\nThe submission-hardening branch adds regression coverage for bounded upload reads, storage path traversal, and malformed JWT subjects. These new tests still need to be run in CI or a clean local environment before claiming they pass.\n
+\n\nThe submission-hardening branch adds regression coverage for bounded upload reads, storage path traversal, malformed JWT subjects, and production demo-password enforcement. These new tests still need to be run in CI or a clean local environment before claiming they pass.\n
