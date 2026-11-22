@@ -245,6 +245,8 @@ def check_secrets() -> list[str]:
     prod = os.getenv("BP_ENV", "").lower() == "production"
     if prod and any(p.startswith("BP_SECRET") for p in problems):
         raise RuntimeError("Refusing to start in production: " + "; ".join(problems))
+    if prod and config.seed_enabled() and config.demo_password() == "demo1234":
+        raise RuntimeError("Refusing to start in production: BP_DEMO_PASSWORD is the public demo default; set a strong unique value")
     for p in problems:
         log.warning("security: %s", p)
     return problems
