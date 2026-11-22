@@ -40,7 +40,7 @@ cd frontend && npm ci
 BACKEND_URL=http://localhost:8000 npm run dev      # http://localhost:3000
 ```
 
-### Demo accounts (password `demo1234`, change with `BP_DEMO_PASSWORD`)
+### Demo accounts (local default password `demo1234`, change with `BP_DEMO_PASSWORD`)
 
 | Email | Role |
 |---|---|
