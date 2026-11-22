@@ -6,9 +6,9 @@ from . import config
 
 def _safe_rel(rel: str) -> str:
     """Reject absolute paths and traversal before using a storage key on disk or in the DB."""
-    if not isinstance(rel, str) or not rel or "\\x00" in rel or rel.startswith(("/", "\\\\")):
+    if not isinstance(rel, str) or not rel or "\x00" in rel or rel.startswith(("/", "\\")):
         raise ValueError("Invalid storage path")
-    normalized = os.path.normpath(rel.replace("\\\\", os.sep))
+    normalized = os.path.normpath(rel.replace("\\", os.sep))
     if normalized in ("", ".", "..") or normalized.startswith(".." + os.sep):
         raise ValueError("Invalid storage path")
     if any(part == ".." for part in normalized.split(os.sep)):
@@ -18,7 +18,6 @@ def _safe_rel(rel: str) -> str:
     if os.path.commonpath((root, target)) != root:
         raise ValueError("Invalid storage path")
     return normalized
-
 
 def _abs(rel: str) -> str:
     return os.path.join(config.storage_dir(), _safe_rel(rel))
